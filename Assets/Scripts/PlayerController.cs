@@ -3,6 +3,23 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+	//Public variables
+	public float jumpForce = 500.0f; //Base force for a jump
+	public float speed = 10.0f; //Speed of the player
+
+	//MonoBehaviour object components
+	Rigidbody2D rb;
+	CircleCollider2D cc;
+	SpriteRenderer sr;
+
+	void Awake(){
+		//Get references to our components
+		rb = GetComponent<Rigidbody2D>();
+		cc = GetComponent<CircleCollider2D>();
+		sr = GetComponent<SpriteRenderer>();
+	}
+
+
 	// Use this for initialization
 	void Start () {
 	
@@ -10,6 +27,39 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		MoveHorizontal(Input.GetAxis("Horizontal"));
+		if(Input.GetButtonDown("Jump")){
+			Jump();
+		}
+	}
+
+	void MoveHorizontal(float input){ //Takes a input from -1.0 to 1.0
+		Vector2 moveVel = rb.velocity; //Get our current rigidbody's velocity
+		moveVel.x = input * speed; //Set the new x velocity to be the given input times our speed
+		rb.velocity = moveVel; //Update our rigidbody's velocity
+	}
+
+	void Jump(){
+		if(IsGrounded()){
+			rb.AddForce(Vector2.up * jumpForce); //Add a upward force to our rigidbody
+		}
+	}
+
+	bool IsGrounded(){ //Returns true if we are on the ground, false otherwise
+		float spriteRange = cc.radius*transform.localScale.y + 0.05f; //Get the point directly under the player
+		float raycastRange = spriteRange + 0.05f; //How far should we do the linecast
+
+		//Perform a linecast hit check for colliders
+		RaycastHit2D hit = Physics2D.Linecast(transform.position - new Vector3(0, spriteRange, 0), transform.position - new Vector3(0, raycastRange, 0));
+		
+		//Debug.DrawLine(transform.position - new Vector3(0, spriteRange, 0), transform.position - new Vector3(0, raycastRange, 0)); //Show the linecast we're preforming
+
+		if(hit.collider == null){ //If the raycast didn't hit anything
+			return false;
+		} else if(hit.collider.tag == "Platform"){ //If it hit a ground's collider
+			return true;
+		} else { //If it hit anything else
+			return false;
+		}		
 	}
 }
