@@ -27,9 +27,17 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		MoveHorizontal(Input.GetAxis("Horizontal"));
-		if(Input.GetButtonDown("Jump")){
-			Jump();
+		MoveHorizontal(Input.GetAxis("Horizontal")); //Move/adjust our horizontal velocity based on our horizontal input
+		if(Input.GetButtonDown("Jump")){ //If we pushed the jump button down this frame...
+			Jump(); //Lets jump!
+		}
+	}
+
+	void OnCollisionEnter2D(Collision2D coll) { //On the frame this object's Collider collides with another collider...
+		if (coll.gameObject.name == "Speed Powerup"){  //Check if we've hit a speed powerup
+			Debug.Log("Powerup picked up!"); //Lets let the console know we've hit a powerup
+			speed *= 1.5f; //Increase our speed by 150%!
+			Destroy(coll.gameObject); //Destroy the powerup
 		}
 	}
 
@@ -40,11 +48,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void Jump(){
-		if(IsGrounded()){
+		//Replace "true" with "IsGrounded()" if you want to stop the infinite jumps
+		if(true){
 			rb.AddForce(Vector2.up * jumpForce); //Add a upward force to our rigidbody
 		}
 	}
 
+	/* Not to be presented, but this will return true if you are on the ground, false otherwise
 	bool IsGrounded(){ //Returns true if we are on the ground, false otherwise
 		float spriteRange = cc.radius*transform.localScale.y + 0.05f; //Get the point directly under the player
 		float raycastRange = spriteRange + 0.05f; //How far should we do the linecast
@@ -62,4 +72,5 @@ public class PlayerController : MonoBehaviour {
 			return false;
 		}		
 	}
+	*/
 }
