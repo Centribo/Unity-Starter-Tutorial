@@ -41,7 +41,8 @@ public class PlayerController : MonoBehaviour {
 
 	void MoveHorizontal(float input){ //Takes a input from -1.0 to 1.0
 		Vector2 moveVel = rb.velocity; //Get our current rigidbody's velocity
-		moveVel.x = input * speed; //Set the new x velocity to be the given input times our speed
+		moveVel.x = input * speed * Time.deltaTime; //Set the new x velocity to be the given input times our speed
+							    //Note the multiply by Time.deltaTime to compensate for game clock
 		rb.velocity = moveVel; //Update our rigidbody's velocity
 	}
 
