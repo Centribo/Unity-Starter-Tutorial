@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour {
 	void Awake(){
 		//Get references to our components
 		rb = GetComponent<Rigidbody2D>();
+		cc = GetComponent<CircleCollider2D>();
 	}
 
 
